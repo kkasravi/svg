@@ -1,0 +1,14 @@
+{
+  "name"          : "svg",
+  "version"       : "0.1",
+  "description"   : "svg module",
+  "url"           : "http://kkasravi.github.com/svg.git",
+  "keywords"      : ["es.next", "svg"],
+  "author"        : "Kam Kasravi <kkasravi@yahoo.com>",
+  "dependencies"  : {
+    "require": "*",
+    "monads": "*"
+  },
+  "lib"           : "./lib",
+  "main"          : "./lib/svg.js"
+}

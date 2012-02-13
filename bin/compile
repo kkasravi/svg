@@ -1,0 +1,10 @@
+#!/bin/ksh
+cwd=$(pwd)
+for i in src/*.es;
+do
+cd ~/transpiler
+a=${i##*/}
+b=${a%.es}.js
+echo ${cwd}/$i
+bin/transpiler ${cwd}/$i > ${cwd}/lib/$b
+done
