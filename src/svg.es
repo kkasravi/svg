@@ -82,7 +82,7 @@ module svg {
       }
       return this;
     }
-    attributes(attrs, recurse){
+    attributes(attrs, recurse) {
       for (var attr in attrs) {
         if (attrs.hasOwnProperty(attr)) {
           try {
@@ -97,12 +97,12 @@ module svg {
       return this;
     }
     bind(fn, ele, ucap) {
-      var binder = function(c, f, e, u){
+      var binder = function(c, f, e, u) {
         var cont = c;
         var func = f;
         var ele = e;
         var useCapture = u || (ele ? true : false);
-        var closure = function(ev){
+        var closure = function(ev) {
           func.call(cont, ev, ele || cont.element());
         };
         return closure;
@@ -157,7 +157,7 @@ module svg {
       }
       return this;
     }               
-    unbind(func, ele, ucap){
+    unbind(func, ele, ucap) {
       @active = false;
       DOMContinuation.prototype.unbind.call(this,func,ele,ucap);
       return this;
@@ -1063,7 +1063,7 @@ module svg {
   }
   export class SvgNode extends SvgType {
     constructor(properties={background:'white',color:'black',dimensions:{x:0,y:0,width:110,height:25},
-      id:Math.uuid(8),transform:'scale(1.0)'}){
+      id:Math.uuid(8),transform:'scale(1.0)'}) {
       private background, className, color, dimensions, enabled, id, root, transform;
       @background = 'white';
       @className = properties.className || 'svg-'+this.constructor.name;
@@ -1099,7 +1099,7 @@ module svg {
       monads.DOMable({id:@id}).on('load').insert(target);
       return this;   
     }
-    style(styles){
+    style(styles) {
         if (!!@styles) {
           for (var styleName in @styles) {
             if (@styles.hasOwnProperty(styleName)) {
