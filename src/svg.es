@@ -2,7 +2,7 @@ module svg {
   module log from 'log';
   module events from 'events';
   module monads from 'monads';
-  module utilities from 'monads';
+  module utilities from 'utilities';
   export class SVGable extends monads.DOMable {
     constructor(properties={dimensions:{x:0,y:0,width:'100%',height:'100%'},viewBox:'none',transform:'scale(1.0)'}) {
       private dimensions, svg, transform;
@@ -67,7 +67,7 @@ module svg {
     }
     animateTranslate(from, to, interval) {
       try {
-        var node = document.createElementNS(this.monad.getSvg().getDefaultNS(),'animateTransform');
+        var node = document.createElementNS(@monad.svg.getDefaultNS(),'animateTransform');
         node.setAttributeNS(null,"attributeName","transform");
         node.setAttributeNS(null,"attributeType","XML");
         node.setAttributeNS(null,"type","translate");
@@ -366,11 +366,11 @@ module svg {
       rotation = rotation + ev.rotation;
     }
   }
-  export class SVGType {
+  export class SvgType {
     constructor(properties={}) {
       private attributes, type;
-      attributes = null;
-      type = null;
+      @attributes = null;
+      @type = null;
       var root = properties.root;
       if (root) {
         root.lift(this.constructor);
@@ -378,14 +378,13 @@ module svg {
     }
     setAttributes(composer,attrs) {
       @attributes = attrs;
-      var node = @type;
       for(var attr in attrs) {
         if (attr === 'text') {
-          node.appendChild(document.createTextNode(attrs[attr]));
+          @type.appendChild(document.createTextNode(attrs[attr]));
         } else if (attr === 'xlink:href') {
-          node.setAttributeNS(composer.getXlinkNS(),"href",attrs[attr]);
+          @type.setAttributeNS(composer.getXlinkNS(),"href",attrs[attr]);
         } else {
-          node.setAttribute(attr,attrs[attr]);
+          @type.setAttribute(attr,attrs[attr]);
         }
       }          
       return this;
@@ -402,9 +401,9 @@ module svg {
     defs(composer) {
       if(composer) {
         var current = composer.svg.childNodes && composer.svg.childNodes.length && composer.svg.childNodes[0];
-        var node = @type = current || document.createElementNS(composer.getSvgNS(),'defs');
-        composer.top().appendChild(node);
-        composer.push(node);
+        @type = current || document.createElementNS(composer.svgNS,'defs');
+        composer.top().appendChild(@type);
+        composer.push(@type);
       }
       return this;
     } 
@@ -416,12 +415,12 @@ module svg {
     g(composer,attrs) {
       var node;
       if(attrs) {
-        node = @type = document.createElementNS(composer.getSvgNS(),'g');
+        node = @type = document.createElementNS(composer.svgNS,'g');
         composer.top().appendChild(node);
         composer.push(node);
         this.setAttributes(composer,attrs);
       } else {
-        node = SVGable({element:composer.top(),svg:composer.getSvg()}).on('load').children('g');
+        node = SVGable({element:composer.top(),svg:composer.svg}).on('load').children('g');
         node && node.length && composer.push(node[0]);
       }
       return this;
@@ -432,7 +431,7 @@ module svg {
       SvgType.call(this,properties);
     }
     animate(composer,attrs) {
-      @type = document.createElementNS(composer.getSvgNS(),'animate');
+      @type = document.createElementNS(composer.svgNS,'animate');
       composer.top().appendChild(@type);
       this.setAttributes(composer,attrs);
       return this;          
@@ -443,7 +442,7 @@ module svg {
       SvgType.call(this,properties);
     }
     animateColor(composer,attrs) {
-      @type = document.createElementNS(composer.getSvgNS(),'animateColor');
+      @type = document.createElementNS(composer.svgNS,'animateColor');
       composer.top().appendChild(@type);
       this.setAttributes(composer,attrs);
       return this;          
@@ -454,7 +453,7 @@ module svg {
       SvgType.call(this,properties);
     }
     animateMotion(composer,attrs) {
-      @type = document.createElementNS(composer.getSvgNS(),'animateMotion');
+      @type = document.createElementNS(composer.svgNS,'animateMotion');
       composer.top().appendChild(@type);
       this.setAttributes(composer,attrs);
       return this;          
@@ -465,7 +464,7 @@ module svg {
       SvgType.call(this,properties);
     }
     animateTransform(composer,attrs) { 
-      @type = document.createElementNS(composer.getSvgNS(),'animateTransform');
+      @type = document.createElementNS(composer.svgNS,'animateTransform');
       composer.top().appendChild(@type);
       this.setAttributes(composer,attrs);
       return this;          
@@ -478,7 +477,7 @@ module svg {
     circle(composer,attrs) { 
       var node;
       if(attrs) {
-        node = @type = document.createElementNS(composer.getSvgNS(),'circle');
+        node = @type = document.createElementNS(composer.svgNS,'circle');
         composer.top().appendChild(node);
         composer.push(node);
         this.setAttributes(composer,attrs);
@@ -496,7 +495,7 @@ module svg {
     clipPath(composer,attrs) { 
       var node;
       if(attrs) {
-        @type = document.createElementNS(composer.getSvgNS(),'clipPath');
+        @type = document.createElementNS(composer.svgNS,'clipPath');
         node = @type;
         composer.top().appendChild(node);
         composer.push(node);
@@ -515,7 +514,7 @@ module svg {
     ellipse(composer,attrs) {
       var node;
       if(attrs) {
-        @type = document.createElementNS(composer.getSvgNS(),'ellipse');
+        @type = document.createElementNS(composer.svgNS,'ellipse');
         node = @type;
         composer.top().appendChild(node);
         composer.push(node);
@@ -532,7 +531,7 @@ module svg {
       SvgType.call(this,properties); 
     }
     feBlend(composer,attrs) {
-      @type = document.createElementNS(composer.getSvgNS(), 'feBlend');
+      @type = document.createElementNS(composer.svgNS, 'feBlend');
       composer.top().appendChild(@type);
       this.setAttributes(composer,attrs);
       return this;          
@@ -545,7 +544,7 @@ module svg {
     feComponentTransfer(composer,attrs) { 
       var node;
       if(attrs) {
-        @type = document.createElementNS(composer.getSvgNS(),'feComponentTransfer');
+        @type = document.createElementNS(composer.svgNS,'feComponentTransfer');
         node = @type;
         composer.top().appendChild(node);
         composer.push(node);
@@ -562,7 +561,7 @@ module svg {
       SvgType.call(this,properties); 
     }
     feComposite(composer,attrs) { 
-      @type = document.createElementNS(composer.getSvgNS(), 'feComposite');
+      @type = document.createElementNS(composer.svgNS, 'feComposite');
       composer.top().appendChild(@type);
       this.setAttributes(composer,attrs);
       return this;          
@@ -573,7 +572,7 @@ module svg {
       SvgType.call(this,properties); 
     }
     feDiffuseLighting(composer,attrs) {
-      @type = document.createElementNS(composer.getSvgNS(),'feDiffuseLighting');
+      @type = document.createElementNS(composer.svgNS,'feDiffuseLighting');
       var node = @type;
       composer.top().appendChild(node);
       composer.push(node);
@@ -586,7 +585,7 @@ module svg {
       SvgType.call(this,properties); 
     }
     feDisplacementMap(composer,attrs) {
-      @type = document.createElementNS(composer.getSvgNS(), 'feDisplacementMap');
+      @type = document.createElementNS(composer.svgNS, 'feDisplacementMap');
       composer.top().appendChild(@type);
       this.setAttributes(composer,attrs);
       return this;          
@@ -597,7 +596,7 @@ module svg {
       SvgType.call(this,properties); 
     }
     feFlood(composer,attrs) { 
-      @type = document.createElementNS(composer.getSvgNS(), 'feFlood');
+      @type = document.createElementNS(composer.svgNS, 'feFlood');
       composer.top().appendChild(@type);
       this.setAttributes(composer,attrs);
       return this;          
@@ -608,7 +607,7 @@ module svg {
       SvgType.call(this,properties); 
     }
     feFuncA(composer,attrs) {
-      @type = document.createElementNS(composer.getSvgNS(), 'feFuncA');
+      @type = document.createElementNS(composer.svgNS, 'feFuncA');
       composer.top().appendChild(@type);
       this.setAttributes(composer,attrs);
       return this;          
@@ -619,18 +618,18 @@ module svg {
       SvgType.call(this,properties); 
     }
     feImage(composer,attrs) {
-      @type = document.createElementNS(composer.getSvgNS(), 'feImage');
+      @type = document.createElementNS(composer.svgNS, 'feImage');
       composer.top().appendChild(@type);
       this.setAttributes(composer,attrs);
       return this;          
     }
   }
-  export class FeGuassianBlur extends SvgType {
+  export class FeGaussianBlur extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
     }
     feGaussianBlur(composer,attrs) { 
-      @type = document.createElementNS(composer.getSvgNS(), 'feGaussianBlur');
+      @type = document.createElementNS(composer.svgNS, 'feGaussianBlur');
       composer.top().appendChild(@type);
       this.setAttributes(composer,attrs);
       return this;          
@@ -641,7 +640,7 @@ module svg {
       SvgType.call(this,properties); 
     }
     feMerge(composer,attrs) { 
-      @type = document.createElementNS(composer.getSvgNS(),'feMerge');
+      @type = document.createElementNS(composer.svgNS,'feMerge');
       composer.top().appendChild(@type);
       composer.push(@type);
       return this;          
@@ -652,7 +651,7 @@ module svg {
       SvgType.call(this,properties); 
     }
     feMergeNode(composer,attrs) {
-      @type = document.createElementNS(composer.getSvgNS(), 'feMergeNode');
+      @type = document.createElementNS(composer.svgNS, 'feMergeNode');
       composer.top().appendChild(@type);
       this.setAttributes(composer,attrs);
       return this;          
@@ -663,7 +662,7 @@ module svg {
       SvgType.call(this,properties); 
     }
     feOffset(composer,attrs) {
-      @type = document.createElementNS(composer.getSvgNS(), 'feOffset');
+      @type = document.createElementNS(composer.svgNS, 'feOffset');
       composer.top().appendChild(@type);
       this.setAttributes(composer,attrs);
       return this;          
@@ -674,7 +673,7 @@ module svg {
       SvgType.call(this,properties); 
     }
     fePointLight(composer,attrs) {
-      @type = document.createElementNS(composer.getSvgNS(),'fePointLight');
+      @type = document.createElementNS(composer.svgNS,'fePointLight');
       composer.top().appendChild(@type);
       this.setAttributes(composer,attrs);
       return this;          
@@ -685,7 +684,7 @@ module svg {
       SvgType.call(this,properties); 
     }
     feSpecularLighting(composer,attrs) { 
-      @type = document.createElementNS(composer.getSvgNS(),'feSpecularLighting');
+      @type = document.createElementNS(composer.svgNS,'feSpecularLighting');
       composer.top().appendChild(@type);
       composer.push(@type);
       this.setAttributes(composer,attrs);
@@ -697,7 +696,7 @@ module svg {
       SvgType.call(this,properties); 
     }
     feTile(composer,attrs) { 
-      @type = document.createElementNS(composer.getSvgNS(),'feTile');
+      @type = document.createElementNS(composer.svgNS,'feTile');
       composer.top().appendChild(@type);
       composer.push(@type);
       this.setAttributes(composer,attrs);
@@ -709,7 +708,7 @@ module svg {
       SvgType.call(this,properties); 
     }
     feTransform(composer,attrs) { 
-      @type = document.createElementNS(composer.getSvgNS(), 'feTransform');
+      @type = document.createElementNS(composer.svgNS, 'feTransform');
       composer.top().appendChild(@type);
       this.setAttributes(composer,attrs);
       return this;          
@@ -720,7 +719,7 @@ module svg {
       SvgType.call(this,properties); 
     }
     feTurbulence(composer,attrs) { 
-      @type = document.createElementNS(composer.getSvgNS(), 'feTurbulence');
+      @type = document.createElementNS(composer.svgNS, 'feTurbulence');
       composer.top().appendChild(@type);
       this.setAttributes(composer,attrs);
       return this;          
@@ -731,7 +730,7 @@ module svg {
       SvgType.call(this,properties); 
     }
     filter(composer,attrs) {
-      @type = document.createElementNS(composer.getSvgNS(),'filter');
+      @type = document.createElementNS(composer.svgNS,'filter');
       composer.top().appendChild(@type);
       composer.push(@type);
       this.setAttributes(composer,attrs);
@@ -743,7 +742,7 @@ module svg {
       SvgType.call(this,properties); 
     }
     line(composer,attrs) { 
-      @type = document.createElementNS(composer.getSvgNS(),'line');
+      @type = document.createElementNS(composer.svgNS,'line');
       composer.top().appendChild(@type);
       composer.push(@type);
       this.setAttributes(composer,attrs);
@@ -755,7 +754,7 @@ module svg {
       SvgType.call(this,properties); 
     }
     linearGradient(composer,attrs) { 
-      @type = document.createElementNS(composer.getSvgNS(),'linearGradient');
+      @type = document.createElementNS(composer.svgNS,'linearGradient');
       composer.top().appendChild(@type);
       composer.push(@type);
       this.setAttributes(composer,attrs);
@@ -767,7 +766,7 @@ module svg {
       SvgType.call(this,properties); 
     }
     marker(composer,attrs) { 
-      @type = document.createElementNS(composer.getSvgNS(),'marker');
+      @type = document.createElementNS(composer.svgNS,'marker');
       composer.top().appendChild(@type);
       composer.push(@type);
       this.setAttributes(composer,attrs);
@@ -779,7 +778,7 @@ module svg {
       SvgType.call(this,properties); 
     }
     path(composer,attrs) { 
-      @type = document.createElementNS(composer.getSvgNS(),'path');
+      @type = document.createElementNS(composer.svgNS,'path');
       composer.top().appendChild(@type);
       composer.push(@type);
       this.setAttributes(composer,attrs);
@@ -791,7 +790,7 @@ module svg {
       SvgType.call(this,properties); 
     }
     pattern(composer,attrs) { 
-      @type = document.createElementNS(composer.getSvgNS(),'pattern');
+      @type = document.createElementNS(composer.svgNS,'pattern');
       composer.top().appendChild(@type);
       composer.push(@type);
       this.setAttributes(composer,attrs);
@@ -803,7 +802,7 @@ module svg {
       SvgType.call(this,properties); 
     }
     polygon(composer,attrs) {
-      @type = document.createElementNS(composer.getSvgNS(),'polygon');
+      @type = document.createElementNS(composer.svgNS,'polygon');
       composer.top().appendChild(@type);
       this.setAttributes(composer,attrs);
       return this;          
@@ -814,7 +813,7 @@ module svg {
       SvgType.call(this,properties); 
     }
     radialGradient(composer,attrs) { 
-      @type = document.createElementNS(composer.getSvgNS(),'radialGradient');
+      @type = document.createElementNS(composer.svgNS,'radialGradient');
       composer.top().appendChild(@type);
       composer.push(@type);
       this.setAttributes(composer,attrs);
@@ -826,7 +825,7 @@ module svg {
       SvgType.call(this,properties); 
     }
     rect(composer,attrs) { 
-      @type = document.createElementNS(composer.getSvgNS(),'rect');
+      @type = document.createElementNS(composer.svgNS,'rect');
       composer.top().appendChild(@type);
       composer.push(@type);
       this.setAttributes(composer,attrs);
@@ -838,7 +837,7 @@ module svg {
       SvgType.call(this,properties); 
     }
     stop(composer,attrs) { 
-      @type = document.createElementNS(composer.getSvgNS(),'stop');
+      @type = document.createElementNS(composer.svgNS,'stop');
       composer.top().appendChild(@type);
       composer.push(@type);
       this.setAttributes(composer,attrs);
@@ -850,7 +849,7 @@ module svg {
       SvgType.call(this,properties); 
     }
     text(composer,attrs) { 
-      @type = document.createElementNS(composer.getSvgNS(),'text');
+      @type = document.createElementNS(composer.svgNS,'text');
       composer.top().appendChild(@type);
       composer.push(@type);
       this.setAttributes(composer,attrs);
@@ -862,7 +861,7 @@ module svg {
       SvgType.call(this,properties); 
     }
     textArea(composer,attrs) { 
-      @type = document.createElementNS(composer.getSvgNS(),'textArea');
+      @type = document.createElementNS(composer.svgNS,'textArea');
       composer.top().appendChild(@type);
       composer.push(@type);
       this.setAttributes(composer,attrs);
@@ -874,7 +873,7 @@ module svg {
       SvgType.call(this,properties); 
     }
     textPath(composer,attrs) {
-      @type = document.createElementNS(composer.getSvgNS(),'textPath');
+      @type = document.createElementNS(composer.svgNS,'textPath');
       composer.top().appendChild(@type);
       this.setAttributes(composer,attrs);
       return this;          
@@ -885,7 +884,7 @@ module svg {
       SvgType.call(this,properties); 
     }
     tspan(composer,attrs) { 
-      @type = document.createElementNS(composer.getSvgNS(),'tspan');
+      @type = document.createElementNS(composer.svgNS,'tspan');
       composer.top().appendChild(@type);
       function setAttributes(node,attrs) {
         for(var attr in attrs) {
@@ -902,12 +901,12 @@ module svg {
       return this;          
     }
   }
-  export class Ellipse extends SvgType {
+  export class Use extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
     }
     use(composer,attrs) { 
-      @type = document.createElementNS(composer.getSvgNS(),'use');
+      @type = document.createElementNS(composer.svgNS,'use');
       composer.top().appendChild(@type);
       this.setAttributes(composer,attrs);
       return this;          
@@ -921,7 +920,6 @@ module svg {
       @height = properties.height || (properties.dimensions && properties.dimensions.height) || "100%";
       @id = properties.id;
       @svgNS = "http://www.w3.org/2000/svg";
-      @stack = utilities.Stack().push(svg);
       @svg = null;
       @style = properties.style;
       @viewBox = "none";
@@ -929,6 +927,7 @@ module svg {
       @xlinkNS = "http://www.w3.org/1999/xlink";
       @composables = {};
       this.createOrFind(properties);
+      @stack = utilities.Stack().push(@svg);
       Defs({root: this});
       G({root: this});
       Animate({root: this});
@@ -989,14 +988,14 @@ module svg {
       return this;
     }
     end() {
-      stack.pop();
+      @stack.pop();
       return this;
     }
     pop() {
-      return stack.pop();
+      return @stack.pop();
     }
     push(o) {
-      stack.push(o);
+      @stack.push(o);
       return this;
     }
     setXmlNS() {
@@ -1045,7 +1044,7 @@ module svg {
         if(methods.hasOwnProperty(method) && typeof(methods[method]) === 'function' && !this[method]) {
           this[method] = function() {
             try {
-              var inst = composableType({root:self});
+              var inst = new composableType({root:self});
               self.addComposable(composableType.name,inst);
               var args = [self];
               var remainder = Array.prototype.slice.call(arguments);
