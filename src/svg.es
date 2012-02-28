@@ -918,7 +918,7 @@ module svg {
       Composer.call(this);
       @defaultNS = "http://www.w3.org/2000/svg";
       @height = properties.height || (properties.dimensions && properties.dimensions.height) || "100%";
-      @id = properties.id;
+      @id = properties.id || Math.uuid(8);
       @svgNS = "http://www.w3.org/2000/svg";
       @svg = null;
       @style = properties.style;
