@@ -382,7 +382,7 @@ module svg {
         if (attr === 'text') {
           @type.appendChild(document.createTextNode(attrs[attr]));
         } else if (attr === 'xlink:href') {
-          @type.setAttributeNS(composer.getXlinkNS(),"href",attrs[attr]);
+          @type.setAttributeNS(composer.xlinkNS,"href",attrs[attr]);
         } else {
           @type.setAttribute(attr,attrs[attr]);
         }
@@ -891,7 +891,7 @@ module svg {
           if (attr === 'text') {
             node.type.appendChild(document.createTextNode(attrs[attr]));
           } else if (attr === 'xlink:href') {
-            node.type.setAttributeNS(composer.getXlinkNS(),"href",attrs[attr]);
+            node.type.setAttributeNS(composer.xlinkNS,"href",attrs[attr]);
           } else {
             node.type.setAttribute(attr, attrs[attr]);
           }
