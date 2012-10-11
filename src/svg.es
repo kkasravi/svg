@@ -456,10 +456,10 @@ module svg {
       var node;
       if(attrs) {
         @type = document.createElementNS(composer.svgNS,'animateMotion');
+        @setAttributes(composer,attrs);
         node = @type;
         composer.top().appendChild(node);
         composer.push(node);
-        this.setAttributes(composer,attrs);
       } else {
         node = SVGable({element:composer.top(),svg:composer.svg}).on('load').children('animateMotion');
         node && node.length && composer.push(node[0]);
@@ -472,9 +472,17 @@ module svg {
       SvgType.call(this,properties);
     }
     animateTransform(composer,attrs) { 
-      @type = document.createElementNS(composer.svgNS,'animateTransform');
-      composer.top().appendChild(@type);
-      this.setAttributes(composer,attrs);
+      var node;
+      if(attrs) {
+        @type = document.createElementNS(composer.svgNS,'animateTransform');
+        @setAttributes(composer,attrs);
+        node = @type;
+        composer.top().appendChild(node);
+        composer.push(node);
+      } else {
+        node = SVGable({element:composer.top(),svg:composer.svg}).on('load').children('animateTransform');
+        node && node.length && composer.push(node[0]);
+      }
       return this;          
     }
   };
@@ -485,10 +493,11 @@ module svg {
     circle(composer,attrs) { 
       var node;
       if(attrs) {
-        node = @type = document.createElementNS(composer.svgNS,'circle');
+        @type = document.createElementNS(composer.svgNS,'circle');
+        @setAttributes(composer,attrs);
+        node = @type;
         composer.top().appendChild(node);
         composer.push(node);
-        this.setAttributes(composer,attrs);
       } else {
         node = SVGable({element:composer.top(),svg:composer.svg}).on('load').children('circle');
         node && node.length && composer.push(node[0]);
@@ -985,15 +994,15 @@ module svg {
       if(!@svg) {  
         @svg = document.createElementNS(@svgNS,'svg');
         @svg.setAttribute('id',@id);
-        @svg.setAttribute('width',@width);
-        @svg.setAttribute('height',@height);
-        @setXmlNS();
-        @setXlinkNS();
-        if(@style) {
-          for(var name in @style) {
-            if(@style.hasOwnProperty(name)) {      
-              @svg.style[name] = @style[name];
-            }
+      }
+      @svg.setAttribute('width',@width);
+      @svg.setAttribute('height',@height);
+      @setXmlNS();
+      @setXlinkNS();
+      if(@style) {
+        for(var name in @style) {
+          if(@style.hasOwnProperty(name)) {      
+            @svg.style[name] = @style[name];
           }
         }
       }
