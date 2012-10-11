@@ -1,0 +1,15 @@
+<html>
+<head>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0"/>
+  <title>Ninja Math</title>
+  <style type="text/css" media="screen">
+  </style>
+</head>
+<body>
+<script type='text/javascript' src='../require/lib/require.js'></script>
+<script type='text/javascript'>
+  require('loader').Loader({ws:'ws://'+location.hostname+':81/',http:location.origin,modules:['../monads/lib/utilities','../monads/lib/monads','../svg/lib/svg','../svg/test/test2']});
+</script>
+</body>
+</html>

@@ -29,7 +29,7 @@ module svg {
       }
       @continuationConstructor = SVGContinuation;
     }
-  }
+  };
   export class SVGContinuation extends monads.DOMContinuation {
     constructor(properties={}) {
       DOMContinuation.call(this, properties);
@@ -162,13 +162,13 @@ module svg {
       DOMContinuation.prototype.unbind.call(this,func,ele,ucap);
       return this;
     }
-  }
+  };
   export class SVGMoveable extends SVGable {
     constructor(properties={}) {
       SVGable.call(this, properties);
       @continuationConstructor = SVGMoveContinuation;
     }
-  }
+  };
   export class SVGMoveContinuation extends SVGContinuation {
     constructor(properties={}) {
       private active, offsetX, offsetY, transform;
@@ -213,13 +213,13 @@ module svg {
       @active = false;
       return false;
     }
-  }
+  };
   export class SVGRotatable extends SVGable {
     constructor(properties={}) {
       SVGable.call(this, properties);
       @continuationConstructor = SVGRotateContinuation;
     }
-  }
+  };
   export class SVGRotateContinuation extends SVGContinuation {
     constructor(properties={}) {
       private active, offsetX, offsetY, transform;
@@ -266,13 +266,13 @@ module svg {
       @active = false;
       return false;
     }
-  }
+  }; 
   export class SVGTouchable extends SVGable {
     constructor(properties={}) {
       SVGable.call(this, properties);
       @continuationConstructor = SVGTouchContinuation;
     }
-  }
+  };
   export class SVGTouchContinuation extends SVGContinuation {
     constructor(properties={}) {
       private active, offsetX, offsetY, transform;
@@ -365,7 +365,7 @@ module svg {
     ongestureend(ev) {
       rotation = rotation + ev.rotation;
     }
-  }
+  };
   export class SvgType {
     constructor(properties={}) {
       private attributes, type;
@@ -393,7 +393,7 @@ module svg {
       @type = t;
       return this;
     }
-  }
+  };
   export class Defs extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -407,7 +407,7 @@ module svg {
       }
       return this;
     } 
-  }
+  };
   export class G extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -425,7 +425,7 @@ module svg {
       }
       return this;
     } 
-  }
+  };
   export class Animate extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties);
@@ -436,7 +436,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
   export class AnimateColor extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties);
@@ -447,18 +447,26 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
   export class AnimateMotion extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties);
     }
     animateMotion(composer,attrs) {
-      @type = document.createElementNS(composer.svgNS,'animateMotion');
-      composer.top().appendChild(@type);
-      this.setAttributes(composer,attrs);
+      var node;
+      if(attrs) {
+        @type = document.createElementNS(composer.svgNS,'animateMotion');
+        node = @type;
+        composer.top().appendChild(node);
+        composer.push(node);
+        this.setAttributes(composer,attrs);
+      } else {
+        node = SVGable({element:composer.top(),svg:composer.svg}).on('load').children('animateMotion');
+        node && node.length && composer.push(node[0]);
+      }
       return this;          
     }
-  }
+  };
   export class AnimateTransform extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties);
@@ -469,7 +477,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
   export class Circle extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -487,7 +495,7 @@ module svg {
       }
       return this;          
     }
-  }
+  };
   export class ClipPath extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -506,7 +514,7 @@ module svg {
       }
       return this;          
     }
-  }
+  };
   export class Ellipse extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -525,7 +533,7 @@ module svg {
       }
       return this;          
     }
-  }
+  };
   export class FeBlend extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -536,7 +544,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
   export class FeComponentTransfer extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -555,7 +563,7 @@ module svg {
       }
       return this;          
     }
-  }
+  };
   export class FeComposite extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -566,7 +574,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
   export class FeDiffuseLighting extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -579,7 +587,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;         
     }
-  }
+  };
   export class FeDisplacementMap extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -590,7 +598,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
   export class FeFlood extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -601,7 +609,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
   export class FeFuncA extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -612,7 +620,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
   export class FeImage extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -623,7 +631,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
   export class FeGaussianBlur extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -634,7 +642,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
   export class FeMerge extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -645,7 +653,7 @@ module svg {
       composer.push(@type);
       return this;          
     }
-  }
+  };
   export class FeMergeNode extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -656,7 +664,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
   export class FeOffset extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -667,7 +675,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
   export class FePointLight extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -678,7 +686,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
   export class FeSpecularLighting extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -690,7 +698,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
   export class FeTile extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -702,7 +710,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
   export class FeTransform extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -713,7 +721,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
   export class FeTurbulence extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -724,7 +732,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
   export class Filter extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -736,7 +744,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
   export class Line extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -748,7 +756,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
   export class LinearGradient extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -760,7 +768,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
   export class Marker extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -772,7 +780,19 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
+  export class Mpath extends SvgType {
+    constructor(properties={}) {
+      SvgType.call(this,properties); 
+    }
+    mpath(composer,attrs) { 
+      @type = document.createElementNS(composer.svgNS,'mpath');
+      composer.top().appendChild(@type);
+      composer.push(@type);
+      this.setAttributes(composer,attrs);
+      return this;          
+    }
+  };
   export class Path extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -784,7 +804,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
   export class Pattern extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -796,7 +816,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
   export class Polygon extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -807,7 +827,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
   export class RadialGradient extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -819,7 +839,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
   export class Rect extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -831,7 +851,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }    
-  }
+  };
   export class Stop extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -843,7 +863,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
   export class Text extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -855,7 +875,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
   export class TextArea extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -867,7 +887,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
   export class TextPath extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -878,7 +898,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }
-  }
+  };
   export class Tspan extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -886,21 +906,10 @@ module svg {
     tspan(composer,attrs) { 
       @type = document.createElementNS(composer.svgNS,'tspan');
       composer.top().appendChild(@type);
-      function setAttributes(node,attrs) {
-        for(var attr in attrs) {
-          if (attr === 'text') {
-            node.type.appendChild(document.createTextNode(attrs[attr]));
-          } else if (attr === 'xlink:href') {
-            node.type.setAttributeNS(composer.xlinkNS,"href",attrs[attr]);
-          } else {
-            node.type.setAttribute(attr, attrs[attr]);
-          }
-        }          
-      }         
-      setAttributes(this,attrs);
+      this.setAttributes(this,attrs);
       return this;          
     }
-  }
+  };
   export class Use extends SvgType {
     constructor(properties={}) {
       SvgType.call(this,properties); 
@@ -911,7 +920,7 @@ module svg {
       this.setAttributes(composer,attrs);
       return this;          
     }    
-  }
+  };
   export class Svg extends monads.Composer {
     constructor(properties={id:Math.uuid(8),style:{}}) {
       private defaultNS, height, id, svgNS, stack, svg, style, viewBox, width, xlinkNS;
@@ -958,6 +967,7 @@ module svg {
       LinearGradient({root: this});        
       Line({root: this});        
       Marker({root: this});        
+      Mpath({root: this});
       Path({root: this});
       Pattern({root: this});          
       Polygon({root: this});
@@ -977,6 +987,8 @@ module svg {
         @svg.setAttribute('id',@id);
         @svg.setAttribute('width',@width);
         @svg.setAttribute('height',@height);
+        @setXmlNS();
+        @setXlinkNS();
         if(@style) {
           for(var name in @style) {
             if(@style.hasOwnProperty(name)) {      
@@ -1003,7 +1015,7 @@ module svg {
       return this;
     }
     setXlinkNS() {
-      @svg && @svg.setAttributeNS("xmlns", "xlink", @xlinkNS);
+      @svg && @svg.setAttribute("xmlns:xlink", @xlinkNS);
       return this;
     }
     setVersion() {
@@ -1059,7 +1071,7 @@ module svg {
       }
       return this;
     }
-  }
+  };
   export class SvgNode extends SvgType {
     constructor(properties={background:'white',color:'black',dimensions:{x:0,y:0,width:110,height:25},
       id:Math.uuid(8),transform:'scale(1.0)'}) {
@@ -1113,5 +1125,5 @@ module svg {
         return this;
     }
     static JUSTIFY = {left:"start",center:"middle",right:"end"}
-  }
+  };
 }
